@@ -1,16 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using UnityEngine;
 
-public class TestEnemy : MonoBehaviour
+public class TestEnemy : MonoBehaviour, IDamageable
 {
     [SerializeField] private float damageAmount = 10f;
 
-    private void OnCollisionEnter(Collision collision)
+    private DamageNumbersSystem.DamageNumbersSettings _damageNumbersSettings;
+
+    private void Start()
     {
-        IDamageable damage = collision.gameObject.GetComponent<IDamageable>();
-        damage?.Damage(damageAmount);
-        Debug.Log("Collided");
+        _damageNumbersSettings = new DamageNumbersSystem.DamageNumbersSettings
+        {
+            lifeTime = 1f, textColor = Color.white, textEmission = Color.white, textSpeed = 5f
+        };
     }
 
     private void OnTriggerEnter(Collider other)
@@ -18,5 +22,11 @@ public class TestEnemy : MonoBehaviour
         IDamageable damage = other.gameObject.GetComponent<IDamageable>();
         damage?.Damage(damageAmount);
         Debug.Log("Triggered");
+    }
+
+    public void Damage(float amount)
+    {
+        Debug.Log("Damaged for " + amount + "!");
+        DamageNumbersSystem.CreateDamageNumbers(transform.position, amount.ToString(CultureInfo.InvariantCulture), _damageNumbersSettings);
     }
 }
