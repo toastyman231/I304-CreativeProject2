@@ -20,6 +20,10 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     private float _smoothTurnVelocity;
     private float _health;
+    private float _experience;
+    private float _xpForNextLevel;
+
+    private int _level = 1;
 
     // Start is called before the first frame update
     void Start()
@@ -28,6 +32,8 @@ public class PlayerController : MonoBehaviour, IDamageable
         _input = GetComponent<PlayerInput>();
         _anim = GetComponent<Animator>();
         _health = maxHealth;
+        _experience = 0f;
+        _xpForNextLevel = GameplayEvents.GetXPForLevel(2);
     }
 
     // Update is called once per frame
@@ -58,5 +64,18 @@ public class PlayerController : MonoBehaviour, IDamageable
     {
         _health -= amount;
         GameplayEvents.OnHealthChangedEvent(amount, _health, maxHealth);
+    }
+
+    public void AddExperience(float amount)
+    {
+        _experience += amount;
+        if (_experience >= _xpForNextLevel)
+        {
+            _level++;
+            _experience = 0;
+            _xpForNextLevel = GameplayEvents.GetXPForLevel(_level);
+            GameplayEvents.OnLevelUpEvent(_level);
+        }
+        GameplayEvents.OnExperienceChangedEvent(amount, _experience, _xpForNextLevel, _level);
     }
 }

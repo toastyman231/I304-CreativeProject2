@@ -10,17 +10,23 @@ public class PlayerHUDController : MonoBehaviour
 
     private UIDocument _document;
     private ProgressBar _healthBar;
+    private ProgressBar _levelBar;
 
     private void Start()
     {
         _document = GetComponent<UIDocument>();
-        _healthBar = _document.rootVisualElement.Q<ProgressBar>();
+        _healthBar = _document.rootVisualElement.Q<ProgressBar>("HealthBar");
+        _levelBar = _document.rootVisualElement.Q<ProgressBar>("LevelProgress");
         GameplayEvents.HealthChangedEvent += OnHealthChanged;
+        GameplayEvents.ExperienceChangedEvent += OnExperienceChanged;
+        GameplayEvents.LevelUpEvent += OnLevelUp;
     }
 
     private void OnDestroy()
     {
         GameplayEvents.HealthChangedEvent -= OnHealthChanged;
+        GameplayEvents.ExperienceChangedEvent -= OnExperienceChanged;
+        GameplayEvents.LevelUpEvent -= OnLevelUp;
     }
 
     private void OnHealthChanged(float amount, float current, float max)
@@ -28,6 +34,21 @@ public class PlayerHUDController : MonoBehaviour
         _healthBar.lowValue = 0;
         _healthBar.highValue = max;
         _healthBar.value = current;
+    }
+
+    private void OnExperienceChanged(float amount, float current, float nextLevel, float currentLevel)
+    {
+        _levelBar.lowValue = 0;
+        _levelBar.highValue = nextLevel;
+        _levelBar.value = current;
+    }
+
+    private void OnLevelUp(float level)
+    {
+        _levelBar.lowValue = 0;
+        _levelBar.highValue = GameplayEvents.GetXPForLevel((int)level + 1);
+        _levelBar.value = 0;
+        _levelBar.title = "LV. " + ((int)level).ToString();
     }
 
     private void Update()

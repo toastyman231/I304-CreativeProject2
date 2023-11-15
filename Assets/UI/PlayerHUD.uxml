@@ -1,4 +1,5 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
     <Style src="project://database/Assets/UI/PlayerHUD.uss?fileID=7433441132597879392&amp;guid=1b597a16453fcdd4796e3a1fb009a02f&amp;type=3#PlayerHUD" />
-    <ui:ProgressBar value="100" title="           " style="position: absolute; top: 168px; left: 157px; width: 150px; height: auto;" />
+    <ui:ProgressBar value="100" title="           " name="HealthBar" class="health-bar" style="position: absolute; top: 528px; left: 881px; width: 150px; height: auto;" />
+    <ui:ProgressBar title="LV. 1" name="LevelProgress" class="level-progress" />
 </ui:UXML>
