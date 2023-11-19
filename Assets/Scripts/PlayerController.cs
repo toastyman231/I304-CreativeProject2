@@ -17,6 +17,7 @@ public class PlayerController : MonoBehaviour, IDamageable
     private Animator _anim;
 
     private bool _moving = false;
+    private bool _hasControl = true;
 
     private float _smoothTurnVelocity;
     private float _health;
@@ -55,15 +56,24 @@ public class PlayerController : MonoBehaviour, IDamageable
 
     private void OnMovement()
     {
+        if (!_hasControl) return;
+
         _moving = _input.actions["Movement"].IsPressed();
         float move = _moving ? 1f : 0f;
         _anim.SetFloat("Movement", move);
+    }
+
+    private void OnDeath()
+    {
+        _hasControl = false;
+        GameplayEvents.OnDeathEvent();
     }
 
     public void Damage(float amount)
     {
         _health -= amount;
         GameplayEvents.OnHealthChangedEvent(amount, _health, maxHealth);
+        if (_health <= 0) OnDeath();
     }
 
     public void AddExperience(float amount)
